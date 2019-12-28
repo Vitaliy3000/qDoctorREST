@@ -11,7 +11,7 @@ produces:
 parameters:
   OmsNumber:
     in: query
-    name: oms_number
+    name: omsNumber
     description: OmsNumber of the person
     required: True
     type: string
@@ -19,7 +19,7 @@ parameters:
     x-example: 1111111111111111
   BirthDate:
     in: query
-    name: birth_date
+    name: birthDate
     description: BirthDate of the person
     required: True
     type: string
@@ -43,11 +43,11 @@ definitions:
     Person:
       type: object
       properties:
-        oms_number:
+        omsNumber:
           type: string
           description: OmsNumber of the person
           x-example: 1111111111111111
-        birth_date:
+        birthDate:
           type: string
           description: BirthDate of the person
           format: date

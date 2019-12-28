@@ -4,17 +4,17 @@ import people_repository
 
 
 async def read(request):
-    oms_number = request.query["oms_number"]
-    birth_date = request.query["birth_date"]
-    appointments = await repo.read(oms_number, birth_date)
+    omsNumber = request.query["omsNumber"]
+    birthDate = request.query["birthDate"]
+    appointments = await repo.read(omsNumber, birthDate)
     return web.json_response(appointments)
 
 
 async def create(request):
     data = await request.json()
 
-    oms_number = data["person"]["oms_number"]
-    birth_date = data["person"]["birth_date"]
+    omsNumber = data["person"]["omsNumber"]
+    birthDate = data["person"]["birthDate"]
 
     start_time = data["appointment"]["start_time"]
     finish_time = data["appointment"]["finish_time"]
@@ -24,12 +24,12 @@ async def create(request):
     complex_resource_id = data["appointment"]["complex_resource_id"]
     priority = data["appointment"].get("priority", 0)
 
-    flag_exist = await people_repository.check(oms_number, birth_date)
+    flag_exist = await people_repository.check(omsNumber, birthDate)
     if not flag_exist:
         # hidden creation person
-        people_repository.add(oms_number, birth_date)
+        people_repository.add(omsNumber, birthDate)
 
-    await repo.add(oms_number, birth_date, start_time, finish_time, lpu_id, code, available_resource_id, complex_resource_id, priority)
+    await repo.add(omsNumber, birthDate, start_time, finish_time, lpu_id, code, available_resource_id, complex_resource_id, priority)
     return web.Response(text="Appointment is create", staus=201)
 
 
@@ -37,15 +37,15 @@ async def update(request):
     data = await request.json()
     appointment_id = int(request.match_info["appointment_id"])
 
-    oms_number = data["person"]["oms_number"]
-    birth_date = data["person"]["birth_date"]
+    omsNumber = data["person"]["omsNumber"]
+    birthDate = data["person"]["birthDate"]
 
     start_time = data["appointment"]["start_time"]
     finish_time = data["appointment"]["finish_time"]
     priority = data["appointment"].get("priority", 0)
 
     try:
-        await repo.update(oms_number, birth_date, appointment_id, start_time, finish_time, priority)
+        await repo.update(omsNumber, birthDate, appointment_id, start_time, finish_time, priority)
     except:
         return web.Response(text="Appointment not found", status=404)
     else:
@@ -53,12 +53,12 @@ async def update(request):
 
 
 async def delete(request):
-    oms_number = request.query["oms_number"]
-    birth_date = request.query["birth_date"]
+    omsNumber = request.query["omsNumber"]
+    birthDate = request.query["birthDate"]
     appointment_id = request.match_info["appointment_id"]
 
     try:
-        await repo.delete(oms_number, birth_date, appointment_id)
+        await repo.delete(omsNumber, birthDate, appointment_id)
     except:
         return web.Response(text="Person not found", status=404)
     else:
