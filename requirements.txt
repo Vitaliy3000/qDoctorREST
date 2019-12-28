@@ -1,0 +1,13 @@
+aiohttp==3.6.2
+aiohttp-swagger==1.0.14
+async-timeout==3.0.1
+asyncpg==0.20.0
+attrs==19.3.0
+chardet==3.0.4
+idna==2.8
+Jinja2==2.10.3
+MarkupSafe==1.1.1
+multidict==4.7.2
+PyYAML==5.2
+yarl==1.4.2
+gunicorn==20.0.4

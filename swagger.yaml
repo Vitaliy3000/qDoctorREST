@@ -1,0 +1,227 @@
+swagger: "2.0"
+info:
+  description: This is the swagger file that goes with our server code
+  version: "1.0.0"
+  title: Swagger Restful API
+consumes:
+  - application/json
+produces:
+  - application/json
+
+parameters:
+  OmsNumber:
+    in: query
+    name: oms_number
+    description: OmsNumber of the person
+    required: True
+    type: string
+    pattern: '^\d{11}$'
+    x-example: 1111111111111111
+  BirthDate:
+    in: query
+    name: birth_date
+    description: BirthDate of the person
+    required: True
+    type: string
+    format: date
+    # x-example: 2017-07-21
+  Person:
+    in: body
+    name: person
+    description: Person info
+    required: True
+    schema:
+      $ref: '#/definitions/Person'
+  Appointment:
+    in: path
+    name: appointment_id
+    description: Id of appointment
+    required: True
+    type: integer
+
+definitions:
+    Person:
+      type: object
+      properties:
+        oms_number:
+          type: string
+          description: OmsNumber of the person
+          x-example: 1111111111111111
+        birth_date:
+          type: string
+          description: BirthDate of the person
+          format: date
+          # x-example: 2000-01-01
+
+    Appointment:
+      type: object
+      properties:
+        lpu_id:
+          type: string
+          example: 10000401
+        code:
+          type: string
+          example: 1863
+        available_resource_id:
+          type: string
+          example: 10064025
+        complex_resource_id:
+          type: string
+          example: 10059868
+        start_time:
+          type: string
+          format: date-time
+          # example: 2019-12-10T15:00:00+03:00
+        finish_time:
+          type: string
+          format: date-time
+          # example: 2019-12-10T17:00:00+03:00
+        priority:
+          type: integer
+          example: 0
+          default: 0
+
+basePath: /
+
+paths:
+  /people:
+    post:
+      operationId: people.create
+      tags:
+        - People
+      summary: Create a person
+      description: Create a new person
+      parameters:
+        - $ref: '#/parameters/Person'
+      responses:
+        200:
+          description: Successfull person is exist
+        201:
+          description: Successfully created person
+
+    get:
+      operationId: people.check
+      tags:
+        - People
+      summary: Check one person
+      description: Check one person
+      parameters:
+        - $ref: '#/parameters/OmsNumber'
+        - $ref: '#/parameters/BirthDate'
+      responses:
+        200:
+          description: Successfully read person from people data operation
+        404:
+          description: Person not found
+
+  /people/appointments:
+    get:
+      operationId: appointments.read
+      tags:
+        - Appointments
+      summary: Read the entire set of notes for all people
+      description: Read the entire set of notes for all people
+      parameters:
+        - $ref: '#/parameters/OmsNumber'
+        - $ref: '#/parameters/BirthDate'
+      responses:
+        200:
+          description: Successfully read notes for all people operation
+          schema:
+            type: array
+            items:
+              properties:
+                appointment_id:
+                  type: integer
+                  description: Id of the created appointment
+                person_id:
+                  type: integer
+                hospital_id:
+                  type: string
+                department_id:
+                  type: string
+                doctor_id:
+                  type: string
+                doctor_complex_id:
+                  type: string
+                start_time:
+                  type: string
+                finish_time:
+                  type: string
+                priority:
+                  type: integer
+                timestamp:
+                  type: integer
+
+    post:
+      operationId: appointments.create
+      tags:
+        - Appointments
+      summary: Create a appointment associated with a person
+      description: Create a appointment associated with a person
+      parameters:
+        - name: appointment_with_person
+          in: body
+          description: Text content of the appointment to create
+          required: True
+          schema:
+            type: object
+            properties:
+              person:
+                $ref: '#/definitions/Person'
+              appointment:
+                $ref: '#/definitions/Appointment'
+      responses:
+        201:
+          description: Successfully created a appointment
+
+  /people/appointments/{appointment_id}:
+    put:
+      operationId: appointments.update
+      tags:
+        - Appointments
+      summary: Update a appointment associated with a person
+      description: Update a appointment associated with a person
+      parameters:
+        - name: appointment_with_person
+          in: body
+          description: Text content of the appointment to create
+          required: True
+          schema:
+            type: object
+            properties:
+              person:
+                $ref: '#/definitions/Person'
+              appointment:
+                type: object
+                properties:
+                  start_time:
+                    type: string
+                    format: date-time
+                    # example: 2019-12-10T15:00:00+03:00
+                  finish_time:
+                    type: string
+                    format: date-time
+                    # example: 2019-12-10T17:00:00+03:00
+                  priority:
+                    type: integer
+                    example: 0
+                    default: 0
+        - $ref: '#/parameters/Appointment'
+      responses:
+        200:
+          description: Successfully updated appointment
+
+    delete:
+      operationId: appointments.delete
+      tags:
+        - Appointments
+      summary: Delete a appointment associated with a person
+      description: Delete a appointment associated with a person
+      parameters:
+        - $ref: '#/parameters/OmsNumber'
+        - $ref: '#/parameters/BirthDate'
+        - $ref: '#/parameters/Appointment'
+      responses:
+        200:
+          description: Successfully deleted a appointment
