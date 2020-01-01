@@ -9,7 +9,6 @@ import appointments
 
 app = web.Application()
 
-app.router.add_route("GET", "/people", people.check)
 app.router.add_route("POST", "/people", people.create)
 app.router.add_route("GET", "/people/appointments", appointments.read)
 app.router.add_route("POST", "/people/appointments", appointments.create)
