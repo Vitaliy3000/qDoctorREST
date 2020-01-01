@@ -34,7 +34,7 @@ parameters:
       $ref: '#/definitions/Person'
   Appointment:
     in: path
-    name: appointment_id
+    name: appointmentId
     description: Id of appointment
     required: True
     type: integer
@@ -56,23 +56,23 @@ definitions:
     Appointment:
       type: object
       properties:
-        lpu_id:
+        lpuId:
           type: string
           example: 10000401
         code:
           type: string
           example: 1863
-        available_resource_id:
+        availableResourceId:
           type: string
           example: 10064025
-        complex_resource_id:
+        complexResourceId:
           type: string
           example: 10059868
-        start_time:
+        startTime:
           type: string
           format: date-time
           # example: 2019-12-10T15:00:00+03:00
-        finish_time:
+        endTime:
           type: string
           format: date-time
           # example: 2019-12-10T17:00:00+03:00
@@ -131,10 +131,10 @@ paths:
             type: array
             items:
               properties:
-                appointment_id:
+                appointmentId:
                   type: integer
                   description: Id of the created appointment
-                person_id:
+                personId:
                   type: integer
                 hospital_id:
                   type: string
@@ -144,9 +144,9 @@ paths:
                   type: string
                 doctor_complex_id:
                   type: string
-                start_time:
+                startTime:
                   type: string
-                finish_time:
+                endTime:
                   type: string
                 priority:
                   type: integer
@@ -175,7 +175,7 @@ paths:
         201:
           description: Successfully created a appointment
 
-  /people/appointments/{appointment_id}:
+  /people/appointments/{appointmentId}:
     put:
       operationId: appointments.update
       tags:
@@ -195,11 +195,11 @@ paths:
               appointment:
                 type: object
                 properties:
-                  start_time:
+                  startTime:
                     type: string
                     format: date-time
                     # example: 2019-12-10T15:00:00+03:00
-                  finish_time:
+                  endTime:
                     type: string
                     format: date-time
                     # example: 2019-12-10T17:00:00+03:00

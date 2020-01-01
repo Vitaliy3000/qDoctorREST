@@ -5,7 +5,7 @@ import people_repository as repo
 async def check(request):
     omsNumber = request.query["omsNumber"]
     birthDate = request.query["birthDate"]
-    flag_exist = await repo.check(oms_number, birth_date)
+    flag_exist = await repo.check(omsNumber, birthDate)
 
     if flag_exist:
         return web.Response(text="Person is exist")
@@ -17,7 +17,7 @@ async def create(request):
     data = await request.json()
     omsNumber = data["omsNumber"]
     birthDate = data["birthDate"]
-    flag_exist = await repo.check(oms_number, birth_date)
+    flag_exist = await repo.check(omsNumber, birthDate)
 
     if flag_exist:
         return web.Response(text="Person is exist")

@@ -3,25 +3,25 @@ import functools
 import datetime
 from connection import _get_connection
 
-async def read(oms_number, birth_date):
+async def read(omsNumber, birthDate):
     query = f"""
     SELECT
-        appointment_id,
-        start_time,
-        finish_time,
-        lpu_id,
+        appointmentId,
+        startTime,
+        endTime,
+        lpuId,
         code,
-        available_resource_id,
-        complex_resource_id,
+        availableResourceId,
+        complexResourceId,
         priority
     FROM 
         person
         INNER JOIN
         appointment
-        ON person.person_id = appointment.person_id
+        ON person.personId = appointment.personId
     WHERE
-        oms_number = '{oms_number}'
-        and birth_date = '{birth_date}'
+        omsNumber = '{omsNumber}'
+        and birthDate = '{birthDate}'
     """
     print(query)
     conn = await _get_connection()
@@ -31,24 +31,24 @@ async def read(oms_number, birth_date):
     result = []
     for row in rows:
         row = dict(row)
-        row['available_resource_id'] = row['available_resource_id'][1:-1]
+        row['availableResourceId'] = row['availableResourceId'][1:-1]
         row['code'] = row['code'][1:-1]
-        row['complex_resource_id'] = row['complex_resource_id'][1:-1]
-        row['lpu_id'] = row['lpu_id'][1:-1]
-        row['finish_time'] = row['finish_time'].strftime('%Y-%m-%dT%H:%M:%S')
-        row['start_time'] = row['start_time'].strftime('%Y-%m-%dT%H:%M:%S')
+        row['complexResourceId'] = row['complexResourceId'][1:-1]
+        row['lpuId'] = row['lpuId'][1:-1]
+        row['endTime'] = row['endTime'].strftime('%Y-%m-%dT%H:%M:%S')
+        row['startTime'] = row['startTime'].strftime('%Y-%m-%dT%H:%M:%S')
         result.append(row)
 
     return result
 
 
-async def delete(oms_number, birth_date, appointment_id):
+async def delete(omsNumber, birthDate, appointmentId):
     query = f"""
-    SELECT person_id
+    SELECT personId
     FROM person
     WHERE
-        oms_number = '{oms_number}'
-        and birth_date = '{birth_date}'
+        omsNumber = '{omsNumber}'
+        and birthDate = '{birthDate}'
     """
     print(query)
     conn = await _get_connection()
@@ -60,8 +60,8 @@ async def delete(oms_number, birth_date, appointment_id):
     FROM
         appointment
     WHERE
-        person_id = '{result[0][0]}'
-        and appointment_id = '{appointment_id}'
+        personId = '{result[0][0]}'
+        and appointmentId = '{appointmentId}'
     """
     print(query)
     conn = await _get_connection()
@@ -71,7 +71,7 @@ async def delete(oms_number, birth_date, appointment_id):
 
 async def _count_appointments():
     query = f"""
-    SELECT count(appointment_id)
+    SELECT count(appointmentId)
     FROM appointment
     """
     print(query)
@@ -81,18 +81,18 @@ async def _count_appointments():
     return result[0][0]
 
 
-async def add(oms_number, birth_date, start_time, finish_time, lpu_id, code, available_resource_id, complex_resource_id, priority):
-    birth_date = datetime.datetime.strptime(birth_date, "%Y-%m-%d").date()
-    start_time = datetime.datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%S")
-    finish_time = datetime.datetime.strptime(finish_time, "%Y-%m-%dT%H:%M:%S")
+async def add(omsNumber, birthDate, startTime, endTime, lpuId, code, availableResourceId, complexResourceId, priority):
+    birthDate = datetime.datetime.strptime(birthDate, "%Y-%m-%d").date()
+    startTime = datetime.datetime.strptime(startTime, "%Y-%m-%dT%H:%M:%S")
+    endTime = datetime.datetime.strptime(endTime, "%Y-%m-%dT%H:%M:%S")
     id = await _count_appointments()
 
     query = f"""
-    SELECT person_id
+    SELECT personId
     FROM person
     WHERE
-        oms_number = '{oms_number}'
-        and birth_date = '{birth_date}'
+        omsNumber = '{omsNumber}'
+        and birthDate = '{birthDate}'
     """
     print(query)
     conn = await _get_connection()
@@ -102,14 +102,14 @@ async def add(oms_number, birth_date, start_time, finish_time, lpu_id, code, ava
     query = (
         """
         INSERT INTO appointment(
-            appointment_id,
-            person_id,
-            start_time,
-            finish_time,
-            lpu_id,
+            appointmentId,
+            personId,
+            startTime,
+            endTime,
+            lpuId,
             code,
-            available_resource_id,
-            complex_resource_id,
+            availableResourceId,
+            complexResourceId,
             priority,
             state,
             timestamp
@@ -118,12 +118,12 @@ async def add(oms_number, birth_date, start_time, finish_time, lpu_id, code, ava
         """,
         id+1,
         result[0][0],
-        start_time,
-        finish_time,
-        f'"{lpu_id}"',
+        startTime,
+        endTime,
+        f'"{lpuId}"',
         f'"{code}"',
-        f'"{available_resource_id}"',
-        f'"{complex_resource_id}"',
+        f'"{availableResourceId}"',
+        f'"{complexResourceId}"',
         priority,
         False,
         datetime.datetime.now(),
@@ -134,17 +134,17 @@ async def add(oms_number, birth_date, start_time, finish_time, lpu_id, code, ava
     await conn.close()
 
 
-async def update(oms_number, birth_date, appointment_id, start_time, finish_time, priority):
-    birth_date = datetime.datetime.strptime(birth_date, "%Y-%m-%d").date()
-    start_time = datetime.datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%S")
-    finish_time = datetime.datetime.strptime(finish_time, "%Y-%m-%dT%H:%M:%S")
+async def update(omsNumber, birthDate, appointmentId, startTime, endTime, priority):
+    birthDate = datetime.datetime.strptime(birthDate, "%Y-%m-%d").date()
+    startTime = datetime.datetime.strptime(startTime, "%Y-%m-%dT%H:%M:%S")
+    endTime = datetime.datetime.strptime(endTime, "%Y-%m-%dT%H:%M:%S")
 
     query = f"""
-    SELECT person_id
+    SELECT personId
     FROM person
     WHERE
-        oms_number = '{oms_number}'
-        and birth_date = '{birth_date}'
+        omsNumber = '{omsNumber}'
+        and birthDate = '{birthDate}'
     """
     print(query)
     conn = await _get_connection()
@@ -154,20 +154,20 @@ async def update(oms_number, birth_date, appointment_id, start_time, finish_time
     query = (
         """
         UPDATE appointment SET
-            start_time=$1,
-            finish_time=$2,
+            startTime=$1,
+            endTime=$2,
             priority=$3,
             timestamp=$4
         WHERE
-            person_id=$5
-            and appointment_id=$6
+            personId=$5
+            and appointmentId=$6
         """,
-        start_time,
-        finish_time,
+        startTime,
+        endTime,
         priority,
         datetime.datetime.now(),
         result[0][0],
-        appointment_id
+        appointmentId
     )
     print(query)
     conn = await _get_connection()

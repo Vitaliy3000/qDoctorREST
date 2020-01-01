@@ -4,13 +4,13 @@ import datetime
 from connection import _get_connection
 
 
-async def check(oms_number, birth_date):
+async def check(omsNumber, birthDate):
     query = f"""
-    SELECT person_id
+    SELECT personId
     FROM person
     WHERE
-        oms_number = '{oms_number}'
-        and birth_date = '{birth_date}'
+        omsNumber = '{omsNumber}'
+        and birthDate = '{birthDate}'
     """
     print(query)
     conn = await _get_connection()
@@ -21,7 +21,7 @@ async def check(oms_number, birth_date):
 
 async def _count_persons():
     query = f"""
-    SELECT count(person_id)
+    SELECT count(personId)
     FROM person
     """
     print(query)
@@ -31,14 +31,14 @@ async def _count_persons():
     return result[0][0]
 
 
-async def add(oms_number, birth_date):
-    birth_date = datetime.datetime.strptime(birth_date, "%Y-%m-%d").date()
+async def add(omsNumber, birthDate):
+    birthDate = datetime.datetime.strptime(birthDate, "%Y-%m-%d").date()
     id = await _count_persons()
     query = (
-        """INSERT INTO person(oms_number, birth_date, person_id, timestamp)
+        """INSERT INTO person(omsNumber, birthDate, personId, timestamp)
                 VALUES($1, $2, $3, $4)""",
-        oms_number,
-        birth_date,
+        omsNumber,
+        birthDate,
         id + 1,
         datetime.datetime.now(),
     )
