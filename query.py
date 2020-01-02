@@ -21,21 +21,14 @@ def personId(omsNumber, birthDate):
 def insert_person(personId, omsNumber, birthDate):
     return f"""
         INSERT INTO person(
-            personId,
             omsNumber,
             birthDate
         )
         VALUES(
-            {personId},
             {omsNumber},
             '{birthDate}'
         )
     """
-
-
-@logger
-def max_person():
-    return "SELECT max(personId) FROM person"
 
 
 @logger
@@ -69,16 +62,10 @@ def delete_appointment(personId, appointmentId):
 
 
 @logger
-def max_appointments():
-    return "SELECT max(appointmentId) FROM appointment"
-
-
-@logger
-def insert_appointment(appointmentId, personId, startTime,
+def insert_appointment(personId, startTime,
                        endTime, priority, timestamp, doctor):
     return f"""
         INSERT INTO appointment(
-            appointmentId,
             personId,
             startTime,
             endTime,
@@ -87,7 +74,6 @@ def insert_appointment(appointmentId, personId, startTime,
             doctor
         )
         VALUES(
-            {appointmentId},
             {personId},
             '{startTime}',
             '{endTime}',

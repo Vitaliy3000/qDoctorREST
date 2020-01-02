@@ -25,18 +25,10 @@ async def _personId(omsNumber, birthDate):
 async def add_person(omsNumber, birthDate):
     conn = await _get_connection()
     result = await conn.execute(query.insert_person(
-        personId=await _max_person() + 1,
         omsNumber=omsNumber,
         birthDate=datetime.datetime.strptime(birthDate, "%Y-%m-%d").date(),
     ))
     await conn.close()
-
-
-async def _max_person():
-    conn = await _get_connection()
-    result = await conn.fetch(query.max_person())
-    await conn.close()
-    return result[0][0] if result[0][0] else 0
 
 
 async def read_all_appointments(omsNumber, birthDate):
@@ -64,17 +56,9 @@ async def delete_appointment(omsNumber, birthDate, appointmentId):
     await conn.close()
 
 
-async def _max_appointments():
-    conn = await _get_connection()
-    result = await conn.fetch(query.max_appointments())
-    await conn.close()
-    return result[0][0] if result[0][0] else 0
-
-
 async def add_appointment(omsNumber, birthDate, startTime, endTime, priority, doctor):
     conn = await _get_connection()
     result = await conn.execute(query.insert_appointment(
-        appointmentId=await _max_appointments() + 1,
         personId=await _personId(omsNumber, birthDate),
         startTime=datetime.datetime.strptime(startTime, "%Y-%m-%dT%H:%M:%S"),
         endTime=datetime.datetime.strptime(endTime, "%Y-%m-%dT%H:%M:%S"),
