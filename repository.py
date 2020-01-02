@@ -36,7 +36,7 @@ async def _max_person():
     conn = await _get_connection()
     result = await conn.fetch(query.max_person())
     await conn.close()
-    return result[0][0]
+    return result[0][0] if result[0][0] else 0
 
 
 async def read_all_appointments(omsNumber, birthDate):
@@ -68,14 +68,10 @@ async def _max_appointments():
     conn = await _get_connection()
     result = await conn.fetch(query.max_appointments())
     await conn.close()
-    return result[0][0]
+    return result[0][0] if result[0][0] else 0
 
 
 async def add_appointment(omsNumber, birthDate, startTime, endTime, priority, doctor):
-    if not await check_person(omsNumber, birthDate):
-        # hidden creation person
-        await add_person(omsNumber, birthDate)
-
     conn = await _get_connection()
     result = await conn.execute(query.insert_appointment(
         appointmentId=await _max_appointments() + 1,

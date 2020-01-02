@@ -23,7 +23,7 @@ async def create(request):
     flag_exist = await repo.check_person(omsNumber, birthDate)
     if not flag_exist:
         # hidden creation person
-        repo.add_person(omsNumber, birthDate)
+        await repo.add_person(omsNumber, birthDate)
 
     await repo.add_appointment(omsNumber, birthDate, startTime, endTime, priority, doctor)
     return web.Response(text="Appointment is create", status=201)
