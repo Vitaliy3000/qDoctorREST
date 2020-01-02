@@ -1,12 +1,11 @@
 from config import web
-import appointments_repository as repo
-import people_repository
+import repository as repo
 
 
 async def read(request):
     omsNumber = request.query["omsNumber"]
     birthDate = request.query["birthDate"]
-    appointments = await repo.read(omsNumber, birthDate)
+    appointments = await repo.read_all_appointments(omsNumber, birthDate)
     return web.json_response(appointments)
 
 
@@ -18,24 +17,21 @@ async def create(request):
 
     startTime = data["appointment"]["startTime"]
     endTime = data["appointment"]["endTime"]
-    lpuId = data["appointment"]["lpuId"]
-    code = data["appointment"]["code"]
-    availableResourceId = data["appointment"]["availableResourceId"]
-    complexResourceId = data["appointment"]["complexResourceId"]
+    doctor = data["appointment"]["doctor"]
     priority = data["appointment"].get("priority", 0)
 
-    flag_exist = await people_repository.check(omsNumber, birthDate)
+    flag_exist = await repo.check_person(omsNumber, birthDate)
     if not flag_exist:
         # hidden creation person
-        people_repository.add(omsNumber, birthDate)
+        repo.add_person(omsNumber, birthDate)
 
-    await repo.add(omsNumber, birthDate, startTime, endTime, lpuId, code, availableResourceId, complexResourceId, priority)
-    return web.Response(text="Appointment is create", staus=201)
+    await repo.add_appointment(omsNumber, birthDate, startTime, endTime, priority, doctor)
+    return web.Response(text="Appointment is create", status=201)
 
 
 async def update(request):
     data = await request.json()
-    appointmentId = int(request.match_info["appointmentId"])
+    appointmentId = request.match_info["appointmentId"]
 
     omsNumber = data["person"]["omsNumber"]
     birthDate = data["person"]["birthDate"]
@@ -45,7 +41,7 @@ async def update(request):
     priority = data["appointment"].get("priority", 0)
 
     try:
-        await repo.update(omsNumber, birthDate, appointmentId, startTime, endTime, priority)
+        await repo.update_appointment(omsNumber, birthDate, appointmentId, startTime, endTime, priority)
     except:
         return web.Response(text="Appointment not found", status=404)
     else:
@@ -58,7 +54,7 @@ async def delete(request):
     appointmentId = request.match_info["appointmentId"]
 
     try:
-        await repo.delete(omsNumber, birthDate, appointmentId)
+        await repo.delete_appointment(omsNumber, birthDate, appointmentId)
     except:
         return web.Response(text="Person not found", status=404)
     else:

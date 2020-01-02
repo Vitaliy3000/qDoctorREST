@@ -56,18 +56,6 @@ definitions:
     Appointment:
       type: object
       properties:
-        lpuId:
-          type: string
-          example: 10000401
-        code:
-          type: string
-          example: 1863
-        availableResourceId:
-          type: string
-          example: 10064025
-        complexResourceId:
-          type: string
-          example: 10059868
         startTime:
           type: string
           format: date-time
@@ -80,6 +68,8 @@ definitions:
           type: integer
           example: 0
           default: 0
+        doctor:
+          type: string
 
 basePath: /
 
@@ -99,27 +89,12 @@ paths:
         201:
           description: Successfully created person
 
-    get:
-      operationId: people.check
-      tags:
-        - People
-      summary: Check one person
-      description: Check one person
-      parameters:
-        - $ref: '#/parameters/OmsNumber'
-        - $ref: '#/parameters/BirthDate'
-      responses:
-        200:
-          description: Successfully read person from people data operation
-        404:
-          description: Person not found
-
   /people/appointments:
     get:
       operationId: appointments.read
       tags:
         - Appointments
-      summary: Read the entire set of notes for all people
+      summary: Read
       description: Read the entire set of notes for all people
       parameters:
         - $ref: '#/parameters/OmsNumber'
@@ -134,30 +109,20 @@ paths:
                 appointmentId:
                   type: integer
                   description: Id of the created appointment
-                personId:
-                  type: integer
-                hospital_id:
-                  type: string
-                department_id:
-                  type: string
-                doctor_id:
-                  type: string
-                doctor_complex_id:
-                  type: string
+                doctor:
+                  type: object
                 startTime:
                   type: string
                 endTime:
                   type: string
                 priority:
                   type: integer
-                timestamp:
-                  type: integer
 
     post:
       operationId: appointments.create
       tags:
         - Appointments
-      summary: Create a appointment associated with a person
+      summary: Create
       description: Create a appointment associated with a person
       parameters:
         - name: appointment_with_person
@@ -180,7 +145,7 @@ paths:
       operationId: appointments.update
       tags:
         - Appointments
-      summary: Update a appointment associated with a person
+      summary: Update
       description: Update a appointment associated with a person
       parameters:
         - name: appointment_with_person
@@ -216,7 +181,7 @@ paths:
       operationId: appointments.delete
       tags:
         - Appointments
-      summary: Delete a appointment associated with a person
+      summary: Delete
       description: Delete a appointment associated with a person
       parameters:
         - $ref: '#/parameters/OmsNumber'
