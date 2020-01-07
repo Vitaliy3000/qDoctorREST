@@ -18,7 +18,7 @@ def personId(omsNumber, birthDate):
 
 
 @logger
-def insert_person(personId, omsNumber, birthDate):
+def insert_person(omsNumber, birthDate):
     return f"""
         INSERT INTO person(
             omsNumber,
