@@ -3,6 +3,7 @@ def logger(func):
         result = func(*args, **kwargs)
         print(result)
         return result
+
     return wrapper
 
 
@@ -62,8 +63,7 @@ def delete_appointment(personId, appointmentId):
 
 
 @logger
-def insert_appointment(personId, startTime,
-                       endTime, priority, timestamp, doctor):
+def insert_appointment(personId, startTime, endTime, priority, timestamp, doctor):
     return f"""
         INSERT INTO appointment(
             personId,
@@ -85,7 +85,9 @@ def insert_appointment(personId, startTime,
 
 
 @logger
-def update_appointment(appointmentId, personId, startTime, endTime, priority, timestamp):
+def update_appointment(
+    appointmentId, personId, startTime, endTime, priority, timestamp
+):
     return f"""
         UPDATE appointment SET
             startTime='{startTime}',

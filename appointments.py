@@ -25,7 +25,9 @@ async def create(request):
         # hidden creation person
         await repo.add_person(omsNumber, birthDate)
 
-    await repo.add_appointment(omsNumber, birthDate, startTime, endTime, priority, doctor)
+    await repo.add_appointment(
+        omsNumber, birthDate, startTime, endTime, priority, doctor
+    )
     return web.Response(text="Appointment is create", status=201)
 
 
@@ -41,7 +43,9 @@ async def update(request):
     priority = data["appointment"].get("priority", 0)
 
     try:
-        await repo.update_appointment(omsNumber, birthDate, appointmentId, startTime, endTime, priority)
+        await repo.update_appointment(
+            omsNumber, birthDate, appointmentId, startTime, endTime, priority
+        )
     except:
         return web.Response(text="Appointment not found", status=404)
     else:
